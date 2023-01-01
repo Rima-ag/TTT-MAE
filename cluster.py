@@ -112,10 +112,11 @@ def train_on_test(base_model: torch.nn.Module,
     dataset_len = len(dataset_val)
     dataset_len = 1001
     all_results = []
+    all_rep = []
     all_losses =  [list() for i in range(dataset_len)]
     for data_iter_step in range(0, dataset_len):
         print(data_iter_step)
-        if data_iter_step == dataset_len:
+        if data_iter_step == 1:
             break
         model, optimizer, loss_scaler = _reinitialize_model(base_model, base_optimizer, base_scalar, clone_model, args, device)
         model.train()
@@ -145,16 +146,17 @@ def train_on_test(base_model: torch.nn.Module,
                 (test_samples, test_label) = val_data
                 test_samples = test_samples.to(device, non_blocking=True)[0]
                 test_label = test_label.to(device, non_blocking=True)
-                loss_d, _, _, pred = model(test_samples, test_label, mask_ratio=0, reconstruct=False)
+                loss_d, _, rep, pred = model(test_samples, test_label, mask_ratio=0, reconstruct=False)
 
                 all_pred.extend(list(pred.argmax(axis=1).detach().cpu().numpy()))
                 acc1 = (stats.mode(all_pred).mode[0] == test_label[0].cpu().detach().numpy()) * 100.
                 all_results.append(acc1)
+                all_rep.append(rep)
             
             with open(os.path.join(args.output_dir, 'results.npy'), 'ab') as f:
-                np.save(f, np.array(all_results))
-            print(len(all_results))
-            all_results = []
+                np.save(f, np.array(all_rep))
+            print(len(all_rep))
+        break
     return 
 
 
