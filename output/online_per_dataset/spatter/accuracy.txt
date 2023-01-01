@@ -1,0 +1,11 @@
+Namespace(accum_iter=1, base_lr=0.01, batch_size=32, blr=0.01, classifier_depth=12, data_path='./imagenet_c/spatter/5', device='cuda:3', dist_on_itp=False, dist_url='file://./output/online_per_dataset/', distributed=False, finetune_mode='encoder', head_type='vit_head', input_size=224, level='5', load_loss_scalar=False, local_rank=-1, log_dir='./output_dir', lr=0.00125, mask_ratio=0.75, model='mae_vit_large_patch16', norm_pix_loss=True, num_workers=10, optimizer_momentum=0.9, optimizer_type='sgd', output_dir='./output/online_per_dataset/spatter', pin_mem=False, print_freq=50, resume_finetune='checkpoints/prob_lr1e-3_wd.2_blk12_ep20.pth', resume_model='checkpoints/mae_pretrain_vit_large_full.pth', seed=0, single_crop=True, steps_per_example=10, stored_latents='', verbose=False, weight_decay=0.05, world_size=1)
+0	77.02297702297702
+1	77.12287712287713
+2	77.32267732267732
+3	77.42257742257742
+4	77.32267732267732
+5	77.42257742257742
+6	77.42257742257742
+7	77.52247752247752
+8	77.52247752247752
+9	77.52247752247752

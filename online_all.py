@@ -27,7 +27,7 @@ from torchvision import datasets
 import glob
 import util.misc as misc
 import models_mae_shared
-from cluster import train_on_test, get_prameters_from_args
+from engine_test_time import train_on_test, get_prameters_from_args, _reinitialize_model
 from data import tt_image_folder
 from util.misc import NativeScalerWithGradNormCount as NativeScaler
 
@@ -138,6 +138,7 @@ def load_combined_model(args, num_classes: int = 1000):
         loss_scaler = None
     return model, optimizer, loss_scaler
 
+
 def main(args):
     misc.init_distributed_mode(args)
 
@@ -174,51 +175,84 @@ def main(args):
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
         
-    data_path = args.data_path
-
-
-    dataset_train = tt_image_folder.ExtendedImageFolder(data_path, transform=transform_train, minimizer=None,
-                                                                    batch_size=args.batch_size, steps_per_example=args.steps_per_example * args.accum_iter, 
-                                                                    single_crop=args.single_crop, start_index=max_known_file+1)
-
-    dataset_val = tt_image_folder.ExtendedImageFolder(data_path, transform=transform_val, 
-                                                                    batch_size=1, minimizer=None, 
-                                                                    single_crop=args.single_crop, start_index=max_known_file+1)
-
+    # data_path = args.data_path
+    root_path = args.data_path
+    order = []
     num_classes = 1000
-
-    # define the model
     model, optimizer, scalar = load_combined_model(args, num_classes)
-
-    print("Model = %s" % str(model))
 
     eff_batch_size = args.batch_size * args.accum_iter * misc.get_world_size()
             
     args.lr = args.blr * eff_batch_size / 256
+    if args.model == 'mae_vit_small_patch16':
+        classifier_depth = 8
+        classifier_embed_dim = 512
+        classifier_num_heads = 16
+    else: 
+        assert ('mae_vit_huge_patch14' in args.model or args.model == 'mae_vit_large_patch16') 
+        classifier_embed_dim = 768
+        classifier_depth = 12
+        classifier_num_heads = 12
+    clone_model = models_mae_shared.__dict__[args.model](num_classes=num_classes, head_type=args.head_type, 
+                                                         norm_pix_loss=args.norm_pix_loss, 
+                                                         classifier_depth=classifier_depth, classifier_embed_dim=classifier_embed_dim, 
+                                                         classifier_num_heads=classifier_num_heads,
+                                                         rotation_prediction=False)
+    model, optimizer, loss_scaler = _reinitialize_model(model, optimizer, scalar, clone_model, args, device)
 
-    wandb_config = vars(args)
-    base_lr = (args.lr * 256 / eff_batch_size)
-    wandb_config['base_lr'] = base_lr
-    print("base lr: %.2e" % base_lr)
-    print("actual lr: %.2e" % args.lr)
+    
+                
+    print("Model = %s" % str(model))
+    for child in os.listdir(root_path):
+        directory = os.path.join(root_path, child)
+        if os.path.isdir(directory):
+            data_path = os.path.join(directory, args.level)
+            order.append(data_path)
 
-    print("accumulate grad iterations: %d" % args.accum_iter)
-    print("effective batch size: %d" % eff_batch_size)
-    
-    start_time = time.time()
-    test_stats = train_on_test(
-        model, optimizer, scalar, dataset_train, dataset_val,
-        device,
-        log_writer=None,
-        args=args,
-        num_classes=num_classes,
-        iter_start=max_known_file+1,
-        reint = False,
-    )
-    
-    total_time = time.time() - start_time
-    total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print('Training time {}'.format(total_time_str))
+
+            with open(os.path.join(args.output_dir, 'order.txt'), 'a') as f:
+                f.write(f'{data_path}\n')
+
+            dataset_train = tt_image_folder.ExtendedImageFolder(data_path, transform=transform_train, minimizer=None,
+                                                                    batch_size=args.batch_size, steps_per_example=args.steps_per_example * args.accum_iter, 
+                                                                    single_crop=args.single_crop, start_index=max_known_file+1)
+
+            dataset_val = tt_image_folder.ExtendedImageFolder(data_path, transform=transform_val, 
+                                                                    batch_size=1, minimizer=None, 
+                                                                    single_crop=args.single_crop, start_index=max_known_file+1)
+
+            
+
+            # define the model
+            
+
+            
+
+            wandb_config = vars(args)
+            base_lr = (args.lr * 256 / eff_batch_size)
+            wandb_config['base_lr'] = base_lr
+            print("base lr: %.2e" % base_lr)
+            print("actual lr: %.2e" % args.lr)
+
+            print("accumulate grad iterations: %d" % args.accum_iter)
+            print("effective batch size: %d" % eff_batch_size)
+            
+            start_time = time.time()
+            test_stats = train_on_test(
+                model, optimizer, loss_scaler, dataset_train, dataset_val,
+                device,
+                log_writer=None,
+                args=args,
+                num_classes=num_classes,
+                iter_start=max_known_file+1,
+                reint = False,
+            )
+            
+            total_time = time.time() - start_time
+            total_time_str = str(datetime.timedelta(seconds=int(total_time)))
+            print('Training time {}'.format(total_time_str))
+
+        
 
 
 if __name__ == '__main__':

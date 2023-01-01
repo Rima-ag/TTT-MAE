@@ -1,0 +1,11 @@
+Namespace(accum_iter=1, base_lr=0.01, batch_size=32, blr=0.01, classifier_depth=12, data_path='./imagenet_c/saturate/5', device='cuda:3', dist_on_itp=False, dist_url='file://./output/', distributed=False, finetune_mode='encoder', head_type='vit_head', input_size=224, load_loss_scalar=False, local_rank=-1, log_dir='./output_dir', lr=0.00125, mask_ratio=0.75, model='mae_vit_large_patch16', norm_pix_loss=True, num_workers=10, optimizer_momentum=0.9, optimizer_type='sgd', output_dir='./output/saturate/', pin_mem=False, print_freq=50, resume_finetune='checkpoints/prob_lr1e-3_wd.2_blk12_ep20.pth', resume_model='checkpoints/mae_pretrain_vit_large_full.pth', seed=0, single_crop=True, steps_per_example=10, stored_latents='', verbose=False, weight_decay=0.05, world_size=1)
+0	65.53446553446554
+1	65.83416583416583
+2	66.13386613386614
+3	66.63336663336663
+4	67.23276723276723
+5	67.53246753246754
+6	67.83216783216783
+7	68.63136863136863
+8	69.23076923076923
+9	69.63036963036963

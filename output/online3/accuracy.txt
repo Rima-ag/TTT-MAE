@@ -1,0 +1,22 @@
+Namespace(accum_iter=1, base_lr=0.01, batch_size=32, blr=0.01, classifier_depth=12, data_path='./imagenet_c', device='cuda:3', dist_on_itp=False, dist_url='file://./output/online3/', distributed=False, finetune_mode='encoder', head_type='vit_head', input_size=224, level='5', load_loss_scalar=False, local_rank=-1, log_dir='./output_dir', lr=0.00125, mask_ratio=0.75, model='mae_vit_large_patch16', norm_pix_loss=True, num_workers=10, optimizer_momentum=0.9, optimizer_type='sgd', output_dir='./output/online3', pin_mem=False, print_freq=50, resume_finetune='checkpoints/prob_lr1e-3_wd.2_blk12_ep20.pth', resume_model='checkpoints/mae_pretrain_vit_large_full.pth', seed=0, single_crop=True, steps_per_example=10, stored_latents='', verbose=False, weight_decay=0.05, world_size=1)
+0	66.63336663336663
+1	66.63336663336663
+2	66.53346653346654
+3	66.63336663336663
+4	66.73326673326673
+5	67.03296703296704
+6	67.23276723276723
+7	67.63236763236763
+8	68.13186813186813
+9	68.03196803196803
+Namespace(accum_iter=1, base_lr=0.01, batch_size=32, blr=0.01, classifier_depth=12, data_path='./imagenet_c', device='cuda:3', dist_on_itp=False, dist_url='file://./output/online3/', distributed=False, finetune_mode='encoder', head_type='vit_head', input_size=224, level='5', load_loss_scalar=False, local_rank=-1, log_dir='./output_dir', lr=0.00125, mask_ratio=0.75, model='mae_vit_large_patch16', norm_pix_loss=True, num_workers=10, optimizer_momentum=0.9, optimizer_type='sgd', output_dir='./output/online3', pin_mem=False, print_freq=50, resume_finetune='checkpoints/prob_lr1e-3_wd.2_blk12_ep20.pth', resume_model='checkpoints/mae_pretrain_vit_large_full.pth', seed=0, single_crop=True, steps_per_example=10, stored_latents='', verbose=False, weight_decay=0.05, world_size=1)
+0	77.02297702297702
+1	77.32267732267732
+2	77.42257742257742
+3	77.32267732267732
+4	77.72227772227772
+5	77.82217782217782
+6	78.02197802197803
+7	78.12187812187813
+8	78.12187812187813
+9	78.32167832167832

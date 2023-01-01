@@ -1,0 +1,7 @@
+./imagenet_c/fog/5
+./imagenet_c/fog/5
+./imagenet_c/frost/5
+./imagenet_c/impulse_noise/5
+./imagenet_c/shot_noise/5
+./imagenet_c/zoom_blur/5
+./imagenet_c/contrast/5

@@ -1,0 +1,11 @@
+Namespace(accum_iter=1, base_lr=0.01, batch_size=32, blr=0.01, classifier_depth=12, data_path='./imagenet_c/fog/5', device='cuda:3', dist_on_itp=False, dist_url='file://./output/', distributed=False, finetune_mode='encoder', head_type='vit_head', input_size=224, load_loss_scalar=False, local_rank=-1, log_dir='./output_dir', lr=0.00125, mask_ratio=0.75, model='mae_vit_large_patch16', norm_pix_loss=True, num_workers=10, optimizer_momentum=0.9, optimizer_type='sgd', output_dir='./output/fog/', pin_mem=False, print_freq=50, resume_finetune='checkpoints/prob_lr1e-3_wd.2_blk12_ep20.pth', resume_model='checkpoints/mae_pretrain_vit_large_full.pth', seed=0, single_crop=True, steps_per_example=10, stored_latents='', verbose=False, weight_decay=0.05, world_size=1)
+0	44.35564435564436
+1	44.55544455544455
+2	45.25474525474525
+3	45.854145854145855
+4	47.052947052947054
+5	47.952047952047955
+6	48.35164835164835
+7	48.85114885114885
+8	49.55044955044955
+9	50.34965034965035
